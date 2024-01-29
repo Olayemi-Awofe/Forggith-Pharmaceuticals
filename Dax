@@ -1,0 +1,37 @@
+Calendar = ADDCOLUMNS(CALENDARAUTO(),
+"Year", YEAR([Date]),
+"Month", FORMAT([Date],"mmm"),
+"Month No", MONTH([Date]),
+"Quarter", FORMAT([Date], "\QQ")
+)
+
+MOM % Change = 
+    VAR CurrentMonthRevenue = [Total Revenue]
+    VAR PreviousMonthRevenue = CALCULATE([Total Revenue], PREVIOUSMONTH('Calendar'[Date]))
+    RETURN
+        DIVIDE(CurrentMonthRevenue - PreviousMonthRevenue, PreviousMonthRevenue, 0)
+
+Target Previous Year YTDs = CALCULATE([Total Target Revenue], PREVIOUSYEAR(DATESYTD('Calendar'[Date])))
+
+Target Revenue Achievement% = DIVIDE([Total Target Revenue], [Total Revenue])
+
+Total Revenue = SUMX(Sales, RELATED(DimProducts[ProductPrice]) * Sales[Quantity])
+
+Total Revenue Previous Year YTD = CALCULATE(
+    [Total Revenue], 
+    PREVIOUSYEAR(DATESYTD('Calendar'[Date]))
+    )
+
+Total Revenue YTD = CALCULATE(
+                            [Total Revenue], DATESYTD('Calendar'[Date])
+                            )
+
+Total Reveue SPLY = CALCULATE([Total Revenue], SAMEPERIODLASTYEAR('Calendar'[Date]))
+
+Total Target Revenue = SUMX(Targets, RELATED(DimProducts[ProductPrice]) * Targets[Value])
+
+Total Target Revenue YTD = CALCULATE([Total Target Revenue], DATESYTD('Calendar'[Date]))
+
+Volume Achieved = SUM(Sales[Quantity])
+
+Volume Target = SUM(Targets[Value])
